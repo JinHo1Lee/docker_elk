@@ -1,9 +1,0 @@
-
-./bin/zookeeper-server-start.sh ./config/zookeeper.properties > /dev/null 2>&1 &
-
-#export KAFKA_HEAP_OPT="-Xmx6G -Xms6G"
-export KAFKA_HEAP_OPT="-Xmx1G -Xms1G"
-#export JMX_PORT=9999 
-
-./bin/kafka-server-start.sh -deamon ./config/server.properties > /dev/null 2>&1 &
-
