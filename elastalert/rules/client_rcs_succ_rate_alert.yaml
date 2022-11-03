@@ -1,0 +1,40 @@
+name: client_rcs_succ_rate_alert
+
+type: percentage_match
+index: rcsrs-tran-*
+
+use_strftime_index: true
+
+realert:
+  seconds: 60
+
+query_key: ["client_id.keyword"]
+
+filter:
+- query_string:
+    query: "NOT failover.mt:true AND rcs.ibrslt:* AND client_id.keyword:* AND (NOT client_id:rcs_prd_rest1 AND NOT client_id:rcs_dev_rest1 AND NOT client_id:rta_test05)"
+
+match_bucket_filter:
+- terms:
+    rcs.ibrslt.keyword: ["10000"]
+
+min_percentage: 50
+min_denominator: 1000
+
+percentage_format_string: "%.2f"
+
+alert:
+- "ms_teams"
+
+ms_teams_webhook_url: "https://ibcloud.webhook.office.com/webhookb2/8a069c86-2c8a-4d92-8397-c2b1d647413c@2f599af2-beb1-4027-8eb2-d312b7a7d59e/IncomingWebhook/2581699c92e74c658f346e27ccc58bf3/91cd6c78-4002-486f-823c-6d6d012afa76"
+ms_teams_alert_summary: client_succ_rate_alert
+
+alert_subject: "RCS 발송 성공률 감소"
+alert_text: |
+    시간: {0} <br>
+    <span style="color:red;font-weight:bold">
+    고객명: {1} <br>
+    성공률: {2:.2f}%
+    </span>
+alert_text_type: "alert_text_only"
+alert_text_args: ["@localtime", "client_id.keyword", "percentage"]

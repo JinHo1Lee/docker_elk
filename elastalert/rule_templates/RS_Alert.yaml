@@ -1,0 +1,57 @@
+# (Required)
+# Rule name, must be unique
+name: RS Alert Log
+
+# (Required)
+# Type of alert.
+# the frequency rule type alerts when num_events events occur with timeframe time
+type: any
+use_local_time: true
+
+# (Required)
+# Index to search, wildcard supported
+index: rcsrslog-*
+#use_strftime_index: true
+
+# (Required, frequency specific)
+# Alert when this many documents matching the query occur within a timeframe
+# num_events: 1
+
+# (Required, frequency specific)
+# num_events must occur within this amount of time to trigger an alert
+# timeframe:
+#   hours: 1
+
+# (Required)
+# A list of Elasticsearch filters used for find events
+# These filters are joined with AND and nested in a filtered query
+# For more info: http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl.html
+filter:
+- query_string:
+    #query: "level:ERROR"
+    query: "message:*ALERT*"
+
+realert:
+  seconds: 10
+  #minutes: 0
+
+# (Required)
+# The alert is use when a match is found
+alert:
+#- "ms_teams"
+- "email"
+#- "slack"
+
+# (required, email specific)
+# a list of email addresses to send alerts to
+email:
+ - "jino@infobank.net"
+
+#ms_teams_webhook_url: "https://outlook.office.com/webhook/b9bee575-19c8-4869-8dc8-266421f2f862@2f599af2-beb1-4027-8eb2-d312b7a7d59e/IncomingWebhook/c880777bdded43c0955ab95450ada154/91cd6c78-4002-486f-823c-6d6d012afa76"
+#ms_teams_alert_summary: RS ALERT
+alert_text: |
+    AlerTime:{0}
+    rsid:{1}
+    Mesage:{2}
+alert_text_type: "alert_text_only"
+alert_text_args: ["logtime", "servername", "message"]

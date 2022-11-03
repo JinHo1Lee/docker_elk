@@ -1,0 +1,34 @@
+name: rcsrs_send_fail_alert
+
+type: frequency
+index: rcsrs-alertlog-*
+
+realert:
+  seconds: 30
+
+num_events: 1
+
+timeframe:
+  seconds: 60
+
+query_key: ["rsid", "description"]
+
+filter:
+- query_string:
+    query: "description:\"Check Route Rule\" AND NOT ibrslt:3015"
+
+alert:
+- "ms_teams"
+
+ms_teams_webhook_url: "https://ibcloud.webhook.office.com/webhookb2/8a069c86-2c8a-4d92-8397-c2b1d647413c@2f599af2-beb1-4027-8eb2-d312b7a7d59e/IncomingWebhook/d8d1557d207346239e2c7db9055a6165/91cd6c78-4002-486f-823c-6d6d012afa76"
+ms_teams_alert_summary: rcsrs_send_fail_alert
+
+alert_subject: "RS 발송 실패"
+alert_text: |
+    시간: {0} <br>
+    <span style="color:red;font-weight:bold">
+    rsid: {1} <br>
+    Message : {2}
+    </span>
+alert_text_type: "alert_text_only"
+alert_text_args: [ "@localtime", "rsid", "message"]

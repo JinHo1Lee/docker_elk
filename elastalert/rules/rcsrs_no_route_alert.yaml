@@ -1,0 +1,34 @@
+name: rcsrs_no_route_alert
+
+type: frequency
+index: rcsrs-tran-*
+
+realert:
+  seconds: 60
+
+num_events: 10000000
+
+timeframe:
+  seconds: 60
+
+query_key: ["rsid", "client_id"]
+
+filter:
+- query_string:
+    query: "ibrslt:3015"
+
+alert:
+- "ms_teams"
+
+ms_teams_webhook_url: "https://ibcloud.webhook.office.com/webhookb2/8a069c86-2c8a-4d92-8397-c2b1d647413c@2f599af2-beb1-4027-8eb2-d312b7a7d59e/IncomingWebhook/d8d1557d207346239e2c7db9055a6165/91cd6c78-4002-486f-823c-6d6d012afa76"
+ms_teams_alert_summary: rcsrs_no_route_alert
+
+alert_subject: "RS No Route Alert"
+alert_text: |
+    시간: {0} <br>
+    <span style="color:red;font-weight:bold">
+    rsid : {1}<br>
+    client_id[건수] : {2}[{3}]
+    </span>
+alert_text_type: "alert_text_only"
+alert_text_args: ["@localtime", "rsid", "client_id", "num_hits"]

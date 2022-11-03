@@ -1,0 +1,59 @@
+{
+  "name": "@bitsensor/elastalert",
+  "version": "0.0.14",
+  "description": "A server that runs ElastAlert and exposes REST API's for manipulating rules and alerts.",
+  "license": "MIT",
+  "main": "index.js",
+  "author": {
+    "name": "BitSensor",
+    "url": "https://bitsensor.io",
+    "email": "dev@bitsensor.io"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bitsensor/elastalert.git"
+  },
+  "directories": {
+    "lib": "./lib",
+    "test": "./test"
+  },
+  "dependencies": {
+    "@babel/cli": "^7.10.1",
+    "@babel/core": "^7.10.2",
+    "@babel/preset-env": "^7.10.2",
+    "@babel/register": "^7.10.1",
+    "body-parser": "^1.19.0",
+    "bunyan": "^1.8.12",
+    "cors": "^2.8.5",
+    "cpu-stat": "^2.0.1",
+    "elasticsearch": "^16.7.1",
+    "express": "^4.17.1",
+    "fs-extra": "^9.0.1",
+    "joi": "^14.3.1",
+    "js-yaml": "^3.14.0",
+    "lodash": "^4.17.15",
+    "mkdirp": "^1.0.4",
+    "object-resolve-path": "^1.1.1",
+    "randomstring": "^1.1.5",
+    "raven": "^2.6.4",
+    "readdirp": "^3.4.0",
+    "recursive-readdir": "^2.2.2",
+    "request": "^2.88.2",
+    "request-promise-native": "^1.0.8",
+    "tar": "^6.0.2",
+    "ws": "^7.3.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.2.0",
+    "husky": "^4.2.5",
+    "istanbul": "^0.4.5",
+    "mocha": "~8.0.1"
+  },
+  "scripts": {
+    "build": "babel src -d lib",
+    "start": "sh ./scripts/start.sh",
+    "test": "./scripts/test.sh",
+    "update-authors": "./scripts/update-authors.sh",
+    "precommit": "./node_modules/eslint/bin/eslint.js ."
+  }
+}

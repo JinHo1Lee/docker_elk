@@ -1,0 +1,10 @@
+{
+	"version":1,
+	"partitions":[
+		{
+			"topic":"rcsts-common",
+			"partition":3,
+			"replicas":[0]
+		}
+	]
+}

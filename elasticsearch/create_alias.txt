@@ -1,0 +1,41 @@
+POST /_aliases
+{
+  "actions": [
+    {
+      "add": {
+        "index": "rcsrs-applog-*",
+        "alias": "rcsrs-applog",
+        "is_write_index": true
+      }
+    },
+    {
+      "add": {
+        "index": "rcsrs-clientlog-*",
+        "alias": "rcsrs-clientlog",
+        "is_write_index": true
+      }
+    },
+    {
+      "add": {
+        "index": "rcsrs-spamlog-*",
+        "alias": "rcsrs-spamlog",
+        "is_write_index": true
+      }
+    },
+	{
+      "add": {
+        "index": "rcsrs-mttran-*",
+        "alias": "rcsrs-mttran",
+        "is_write_index": true
+      }
+    },
+	{
+      "add": {
+        "index": "rcsts-applog-*",
+        "alias": "rcsts-applog",
+        "is_write_index": true
+      }
+    }
+  ]
+}
+

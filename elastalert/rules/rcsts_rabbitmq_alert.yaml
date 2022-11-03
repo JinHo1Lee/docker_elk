@@ -1,0 +1,31 @@
+name: rcsts_rabbitmq_alert
+
+type: any
+index: rcsts-alertlog-*
+
+realert:
+  seconds: 60
+
+#query_key: ["tsid", "thread", "description"]
+query_key: ["tsid"]
+
+filter:
+- query_string:
+    query: "message:\"*AMQP Connection*\""
+
+
+alert:
+- "ms_teams"
+
+ms_teams_webhook_url: "https://ibcloud.webhook.office.com/webhookb2/8a069c86-2c8a-4d92-8397-c2b1d647413c@2f599af2-beb1-4027-8eb2-d312b7a7d59e/IncomingWebhook/c337e9d8c6104c3783b43e59f955ddb7/91cd6c78-4002-486f-823c-6d6d012afa76"
+ms_teams_alert_summary: rcsts_rabbitmq_alert
+
+alert_subject: "[RCS TS] RabbitMQ Alert"
+alert_text: |
+    시간 : {0} <br>
+    <span style="color:red;font-weight:bold">
+    ts_id : {1} <br>
+    </span>
+    {2}
+alert_text_type: "alert_text_only"
+alert_text_args: ["@localtime", "tsid", "description"]

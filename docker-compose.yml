@@ -1,0 +1,175 @@
+version: '2.2'
+
+services:
+
+  logstash01:
+    build:
+      context: ./logstash01/
+      args:
+        ELK_VERSION : 7.5.0
+        ES_USER: elastic
+        ES_PASSWORD: pwelastic
+    container_name: logstash01
+    environment:
+      ES_JAVA_OPTS: "-Xmx1g -Xms1g -XX:MaxMetaspaceSize=256m"
+    volumes:
+      - /home/elk/docker_elk/logstash/node01/config:/usr/share/logstash/config
+      - /home/elk/docker_elk/logstash/node01/pipeline:/usr/share/logstash/pipeline
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - 5044:5044
+    networks:
+      - elk
+    restart: always
+
+  logstash02:
+    build:
+      context: ./logstash02/
+      args:
+        ELK_VERSION : 7.5.0
+        ES_USER: elastic
+        ES_PASSWORD: pwelastic
+    container_name: logstash02
+    environment:
+      ES_JAVA_OPTS: "-Xmx1g -Xms1g -XX:MaxMetaspaceSize=256m"
+    volumes:
+      - /home/elk/docker_elk/logstash/node02/config:/usr/share/logstash/config
+      - /home/elk/docker_elk/logstash/node02/pipeline:/usr/share/logstash/pipeline
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - 5144:5144
+      - 5145:5145
+    networks:
+      - elk
+    restart: always
+
+  elasticsearch01:
+    build:
+      context: ./elasticsearch/
+      args:
+        ELK_VERSION : 7.5.0
+    container_name: elasticsearch01
+    environment:
+      - node.name=elasticsearch01
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=elasticsearch02,elasticsearch03
+      - cluster.initial_master_nodes=elasticsearch01,elasticsearch02,elasticsearch03
+      - bootstrap.memory_lock=true
+      - ELASTIC_PASSWORD=pwelastic
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - /home/newgw/docker_elk/elasticsearch/data:/usr/share/elasticsearch/data
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - 9200:9200
+    networks:
+      - elk
+    restart: always
+
+  elasticsearch02:
+    build:
+      context: ./elasticsearch/
+      args:
+        ELK_VERSION : 7.5.0
+    container_name: elasticsearch02
+    environment:
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - node.name=elasticsearch02
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=elasticsearch01,elasticsearch03
+      - cluster.initial_master_nodes=elasticsearch01,elasticsearch02,elasticsearch03
+      - bootstrap.memory_lock=true
+      - ELASTIC_PASSWORD=pwelastic
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - 9201:9200
+    networks:
+      - elk
+    restart: always
+
+  elasticsearch03:
+    build:
+      context: ./elasticsearch/
+      args:
+        ELK_VERSION : 7.5.0
+    container_name: elasticsearch03
+    environment:
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - node.name=elasticsearch03
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=elasticsearch01,elasticsearch02
+      - cluster.initial_master_nodes=elasticsearch01,elasticsearch02,elasticsearch03
+      - bootstrap.memory_lock=true
+      - ELASTIC_PASSWORD=pwelastic
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - 9202:9200
+    networks:
+      - elk
+    restart: always
+
+
+  kibana:
+    build:
+      context: kibana/
+      args:
+        ELK_VERSION : 7.5.0
+        ELASTALERT_HOST: elastalert
+        ELASTALERT_PORT: 3030
+        #ES_USER: elastic
+        #ES_PASSWORD: pwelastic
+    container_name: kibana
+    environment:
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+    volumes:
+      - /home/newgw/docker_elk/kibana/config:/usr/share/kibana/config
+      - /etc/localtime:/etc/localtime:ro
+    depends_on:
+      - elasticsearch01
+    ports:
+      - 5601:5601
+    networks:
+      - elk
+    restart: always
+
+
+  elastalert:
+    build:
+      context: elastalert/
+      args:
+        ELASTALERT_VERSION: v0.2.4
+        ES_HOST : elasticsearch01
+        ES_PORT: 9200
+        ES_USER: elastic
+        ES_PASSWORD: pwelastic
+    container_name: elastalert
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /opt/elastalert/config:/home/newgw/docker_elk/elastalert/config
+      - /opt/elastalert/rules:/home/newgw/docker_elk/elastalert/rules
+    depends_on:
+      - elasticsearch01
+      - kibana
+    ports:
+      - 3030:3030
+      - 3333:3333
+    networks:
+      - elk
+    restart: always
+
+networks:
+  elk:
+    driver: bridge

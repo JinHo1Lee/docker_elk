@@ -1,0 +1,33 @@
+name: rcsts_queue_pending_alert
+
+type: any
+index: rcsts-queue-*
+
+
+realert:
+  seconds: 60
+
+query_key: ["tsid", "queue_name"]
+
+filter:
+- range:
+    queue_size:
+        gt: 300
+
+
+
+alert:
+- "ms_teams"
+
+ms_teams_webhook_url: "https://ibcloud.webhook.office.com/webhookb2/8a069c86-2c8a-4d92-8397-c2b1d647413c@2f599af2-beb1-4027-8eb2-d312b7a7d59e/IncomingWebhook/c337e9d8c6104c3783b43e59f955ddb7/91cd6c78-4002-486f-823c-6d6d012afa76"
+ms_teams_alert_summary: rcsts_queue_pending_alert
+
+alert_subject: "[RCS TS] Queue Pendig"
+alert_text: |
+    시간: {0} <br>
+    <span style="color:red;font-weight:bold">
+    ts_id : {1} <br>
+    Queue[size] : {2}[{3}]
+    </span>
+alert_text_type: "alert_text_only"
+alert_text_args: [ "@localtime", "tsid","queue_name", "queue_size"]

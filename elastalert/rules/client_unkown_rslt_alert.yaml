@@ -1,0 +1,34 @@
+name: client_unknown_rslt_alert
+
+type: frequency
+index: rcsrs-rsltlog-*
+
+realert:
+  seconds: 60
+
+num_events: 1000
+
+timeframe:
+  seconds: 60
+
+#query_key: ["client_id.keyword"]
+
+filter:
+- query_string:
+    query: "ibrslt.keyword:3014 AND client_id.keyword:*"
+
+
+alert:
+- "ms_teams"
+
+ms_teams_webhook_url: "https://ibcloud.webhook.office.com/webhookb2/8a069c86-2c8a-4d92-8397-c2b1d647413c@2f599af2-beb1-4027-8eb2-d312b7a7d59e/IncomingWebhook/2581699c92e74c658f346e27ccc58bf3/91cd6c78-4002-486f-823c-6d6d012afa76"
+ms_teams_alert_summary: client_unknown_rslt_alert
+
+alert_subject: "3014 Alert"
+alert_text: |
+    시간: {0} <br>
+    <span style="color:red;font-weight:bold">
+    건수 : {2}<br>
+    </span>
+alert_text_type: "alert_text_only"
+alert_text_args: ["@localtime", "num_hits"]
